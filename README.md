@@ -1,6 +1,6 @@
 # Glofox Sync
 
-Google Sheets → Glofox lead sync for the yoga studio mailing list.
+Google Sheets → Glofox lead sync for Prospect Park Yoga's mailing list.
 
 ## What this does
 
@@ -13,7 +13,7 @@ Replaces a paid Zapier integration with a free Google Apps Script.
 1. Open the Google Sheet (the one connected to the website signup form)
 2. Extensions → Apps Script
 3. Paste the contents of `sync_leads.gs`
-4. Fill in `GLOFOX_API_KEY`, `GLOFOX_API_TOKEN`, and `GLOFOX_BRANCH_ID` at the top
+4. Credentials are already filled in (see `credentials_*.csv` for raw values)
 5. Select `install` from the function dropdown → Run → authorize
 6. Done. Runs every 5 minutes automatically.
 
@@ -28,6 +28,7 @@ Email **apiactivation@abcfitness.com** — request API Key, API Token, and Branc
 - POSTs to `https://gf-api.aws.glofox.com/prod/2.1/branches/{BRANCH_ID}/leads`
 - Marks the row with a timestamp on success, or "ERROR: ..." on failure
 - Duplicate leads (already in Glofox) are treated as success
+- Uses a lock to prevent double-processing from overlapping triggers
 
 ## Sheet columns
 
@@ -38,3 +39,9 @@ Email **apiactivation@abcfitness.com** — request API Key, API Token, and Branc
 ## Testing
 
 Run `testWithFirstRow` in Apps Script to dry-run without calling the API. Uncomment one line in that function to do a real test.
+
+## Files
+
+- `sync_leads.gs` — the Apps Script to paste into Google Sheets
+- `NOTES.md` — API details, working curl commands, status enums, and current blockers
+- `credentials_*.csv` — API credentials (gitignored)

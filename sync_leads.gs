@@ -12,9 +12,9 @@
 
 // ── Config (fill these in) ──────────────────────────────────
 var CONFIG = {
-  GLOFOX_API_KEY:   "YOUR_API_KEY_HERE",
-  GLOFOX_API_TOKEN: "YOUR_API_TOKEN_HERE",
-  GLOFOX_BRANCH_ID: "YOUR_BRANCH_ID_HERE",
+  GLOFOX_API_KEY:   "YOUR_API_KEY_HERE",       // see credentials_*.csv
+  GLOFOX_API_TOKEN: "YOUR_API_TOKEN_HERE",     // see credentials_*.csv
+  GLOFOX_BRANCH_ID: "YOUR_BRANCH_ID_HERE",     // Location ID from Glofox dashboard
 
   // Column positions (1-indexed) — adjust if your sheet layout differs
   COL_SUBMITTED_ON: 1,   // A
@@ -23,7 +23,8 @@ var CONFIG = {
   COL_SYNCED:       4,   // D (we'll write to this column)
 
   HEADER_ROW: 1,
-  MARKETING_SOURCE: "website_signup"
+  MARKETING_SOURCE: "Landing Page",
+  LEAD_STATUS: "LEAD"
 };
 
 // ── Install / Uninstall ─────────────────────────────────────
@@ -124,14 +125,15 @@ function createGlofoxLead(firstName, lastName, email) {
     first_name: firstName,
     last_name: lastName,
     email: email,
-    marketing_source: CONFIG.MARKETING_SOURCE
+    marketing_source: CONFIG.MARKETING_SOURCE,
+    lead_status: CONFIG.LEAD_STATUS
   };
 
   var options = {
     method: "post",
     contentType: "application/json",
     headers: {
-      "Authorization": "Bearer " + CONFIG.GLOFOX_API_TOKEN,
+      "x-glofox-api-token": CONFIG.GLOFOX_API_TOKEN,
       "x-api-key": CONFIG.GLOFOX_API_KEY
     },
     payload: JSON.stringify(payload),
