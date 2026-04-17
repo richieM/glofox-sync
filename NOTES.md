@@ -1,10 +1,8 @@
 # Glofox Sync — Working Notes
 
-## Status (2026-04-09)
+## Status (2026-04-15)
 
-**Blocked: waiting on ABC Fitness to fix API write permissions.**
-
-GET requests work, POST to create leads returns `INVALID_USER_TYPE`. Email sent to apiactivation@abcfitness.com asking them to enable lead creation on our integrator account.
+**Unblocked.** The `INVALID_USER_TYPE` error was NOT a permissions issue — we were using the deprecated `/2.1/branches/{id}/leads` endpoint. Glofox support (Ola) confirmed the correct endpoint is `POST /2.0/register` with `no_password: true` and `leads: { marketing_source: "..." }` nested structure. Script updated.
 
 ## API Details
 
@@ -89,7 +87,32 @@ Website signup form
 ```
 
 ## Next Steps
-1. Get confirmation from ABC Fitness that write permissions are enabled
-2. Test POST to create a lead (use Testy McTesterson / testy@test.com)
-3. Paste script into Google Apps Script, run `install`
+1. ~~Get confirmation from ABC Fitness that write permissions are enabled~~ ✅ Resolved — was using wrong endpoint
+2. Test POST to /2.0/register with a test lead
+3. Paste updated script into Google Apps Script, run `install`
 4. Verify with a real signup on the website
+
+## Endpoint Change (2026-04-15)
+Old (deprecated, returns INVALID_USER_TYPE):
+```
+POST /2.1/branches/{id}/leads
+```
+
+New (recommended by Glofox support):
+```
+POST /2.0/register
+Headers: x-glofox-branch-id: {branch_id}
+
+Body:
+{
+  "first_name": "Test",
+  "last_name": "User",
+  "email": "test@test.com",
+  "no_password": true,
+  "lead_status": "LEAD",
+  "leads": {
+    "marketing_source": "Landing Page"
+  }
+}
+```
+Note: `no_password: true` is required since these are leads, not full member signups.

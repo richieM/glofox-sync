@@ -118,15 +118,20 @@ function syncNewLeads() {
 // ── Glofox API call ─────────────────────────────────────────
 
 function createGlofoxLead(firstName, lastName, email) {
-  var url = "https://gf-api.aws.glofox.com/prod/2.1/branches/"
-    + CONFIG.GLOFOX_BRANCH_ID + "/leads";
+  // Use /2.0/register endpoint (recommended by Glofox support).
+  // The older /2.1/branches/{id}/leads route is deprecated and returns
+  // INVALID_USER_TYPE for integrator accounts.
+  var url = "https://gf-api.aws.glofox.com/prod/2.0/register";
 
   var payload = {
     first_name: firstName,
     last_name: lastName,
     email: email,
-    marketing_source: CONFIG.MARKETING_SOURCE,
-    lead_status: CONFIG.LEAD_STATUS
+    no_password: true,
+    lead_status: CONFIG.LEAD_STATUS,
+    leads: {
+      marketing_source: CONFIG.MARKETING_SOURCE
+    }
   };
 
   var options = {
@@ -134,7 +139,8 @@ function createGlofoxLead(firstName, lastName, email) {
     contentType: "application/json",
     headers: {
       "x-glofox-api-token": CONFIG.GLOFOX_API_TOKEN,
-      "x-api-key": CONFIG.GLOFOX_API_KEY
+      "x-api-key": CONFIG.GLOFOX_API_KEY,
+      "x-glofox-branch-id": CONFIG.GLOFOX_BRANCH_ID
     },
     payload: JSON.stringify(payload),
     muteHttpExceptions: true
